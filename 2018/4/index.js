@@ -75,7 +75,6 @@ const byMinutesSlept = Object.entries(byDay).map(([id, days]) => ({
   minutes: Object.values(days).reduce((a, b) => a.concat(b), []).reduce((a, b) => a + b)
 }));
 
-
 const sleepiestId = byMinutesSlept.sort(({ minutes: a }, { minutes: b }) => a < b ? 1 : a > b ? -1 : 0)[0].id;
 
 const sleepiestLogs = byDay[sleepiestId];
@@ -99,5 +98,41 @@ const sleepiestMinute = Object.entries(byMinuteForSleepiest).reduce((acc, [ minu
   return acc;
 }, { slept: 0 });
 
-console.log(sleepiestId);
-console.log(sleepiestMinute);
+// console.log('part 1: id #', sleepiestId, sleepiestMinute);
+
+const byMinuteForAllGuards = Object.entries(byDay)
+  .map(([ id, days ]) => ({
+    id,
+    minutes: Object.entries(days)
+      .map(([ day, minutes ]) => { console.log(minutes.join(''), id, day); return [ day, minutes ]; })
+      .map(([ day, minutes ]) => minutes.map((asleep, minute) => ({ asleep, minute })))
+      .reduce((a, b) => a.concat(b), [])
+      .reduce((acc, { asleep, minute }) => {
+        acc[minute] = (acc[minute] || 0) + asleep;
+
+        return acc;
+      }, {})
+  }));
+
+const mostSleptMinute = byMinuteForAllGuards.reduce((acc, { id, minutes }) => {
+  const mostSleptMinuteForGuard = Object.entries(minutes).reduce((acc, [ minute, frequency ]) => {
+    if (frequency > acc.frequency) {
+      return { minute, frequency };
+    }
+
+    return acc;
+  }, { frequency: 0 });
+  console.log(id, mostSleptMinuteForGuard);
+
+  if (mostSleptMinuteForGuard.frequency > acc.frequency) {
+    return {
+      ...mostSleptMinuteForGuard,
+      id
+    };
+  }
+
+  return acc;
+
+}, { frequency: 0 });
+
+console.log(JSON.stringify(mostSleptMinute, null, 2));
