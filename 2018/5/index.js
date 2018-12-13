@@ -31,13 +31,37 @@ const reduce = (input) => {
     .join('');
 };
 
+const length = (input) => reduce(input).length;
+
+const uniqueChars = (input) => Object.keys(input.split('').reduce((acc, it) => ({
+  ...acc,
+  [it.toLowerCase()]: (acc[it.toLowerCase()] || 0) + 1
+}), {}));
+
+const improve = (input) => (char) => {
+  const improved = input.replace(new RegExp(`${char}`, 'ig'), '');
+  const improvedLength = length(improved);
+
+  return {
+    char,
+    length: improvedLength
+  };
+};
+
+const getImprovedLengths = (input) => uniqueChars(input).map(improve(input));
+
+const getMostImproved = (improved) => improved.slice().sort(({ length: a }, { length: b }) => a < b ? -1 : a > b ? 1 : 0)[0];
 
 (() => {
   const input = 'dabAcCaCBAcCcaDA';
   const expected = 'dabCBAcaDA';
 
-  assert.equal(expected, reduce(input));
+  assert.equal(length(input),expected.length);
+
+  // { char: 'c', length: 4 }
+  assert.equal(getMostImproved(getImprovedLengths(input)).length, 4);
 })();
 
 const input = fs.readFileSync(`${__dirname}/input`, 'utf-8');
-console.log(reduce(input), reduce(input).length);
+console.log(reduce(input).length);
+console.log(getMostImproved(getImprovedLengths(input)));
