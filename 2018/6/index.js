@@ -34,15 +34,19 @@ const addPoints = (grid, input) => input.reduce(({ grid, label }, [ x, y ]) => {
 
 const manhattanDistance = ({ x, y }) => ([ ex, ey ]) => Math.abs(x - ex) + Math.abs(y - ey);
 
+let total = 0;
 const calculateDistances = (grid, input) => {
   const points = input.reduce((acc, coords) => ({
     ...acc,
     [coords.join(',')]: 0
   }), {});
 
-  console.log(grid.length, grid[0].length);
   grid.forEach((row, y) => row.forEach((col, x) => {
     const distances = input.map(manhattanDistance({ x, y }));
+    const sum = distances.reduce((a, b) => a + b);
+    if (sum < 10000) {
+      total++;
+    }
     const sorted = [ ...distances].sort((a, b) => a < b ? -1 : a > b ? 1 : 0);
     const smallest = sorted[0];
 
@@ -66,19 +70,6 @@ const byArea = (distancesByPoint) => {
   console.log(Object.values(distancesByPoint).sort((a, b) => a < b ? - 1 : a > b ? 1 : 0).reverse());
 };
 
-// console.log(logGrid(addPoints(makeGrid(getSize(input)), input)));
-
-byArea(calculateDistances(makeGrid(getSize(input)), input));
-
-`
-aaaaa.cccc
-aAaaa.cccc
-aaaddecccc
-aadddeccCc
-..dDdeeccc
-bb.deEeecc
-bBb.eeee..
-bbb.eeefff
-bbb.eeffff
-bbb.ffffFf
-`;
+const distances = calculateDistances(makeGrid(getSize(input)), input);
+byArea(distances);
+console.log(total);
