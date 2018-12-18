@@ -2,7 +2,6 @@ const fs = require('fs');
 
 const string = fs.readFileSync(`${__dirname}/input`, 'utf-8');
 // const string = '2 3 0 3 10 11 12 1 1 0 1 99 2 1 1 2';
-
 const input = string.split(' ').map(Number);
 
 const parse = (input, node = { children: [], metadata: [] }, remainingChildren = 0) => {
@@ -30,8 +29,20 @@ const getNodes = ({ children = [], metadata = [] }, acc = []) => {
   return acc;
 };
 
+const getValue = ({ children = [], metadata = [] }) => {
+  if (!children.length) {
+    return metadata.reduce((a, b) => a + b, 0);
+  }
+
+  const childNodes = metadata.map((index) => children[index - 1])
+    .filter(Boolean);
+
+  return childNodes.reduce((acc, node) => acc + getValue(node), 0);
+};
+
 const [ tree ] = parse(input);
 const nodes = getNodes(tree);
 const metadata = nodes.reduce((acc, { metadata }) => acc.concat(metadata), []);
 
 console.log(`1: ${metadata.reduce((a, b) => a + b, 0)}`);
+console.log(`2: ${getValue(tree)}`);
