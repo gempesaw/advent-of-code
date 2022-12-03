@@ -1,7 +1,4 @@
 (progn
-  (defun aoc-s-split (separator string)
-    (s-split separator string t))
-
   (defun aoc-to-priority (char)
     (let ((priority (- (string-to-char char) 96)))
       (if (> priority 0)
@@ -31,8 +28,7 @@ CrZsJsPPZsGzwwsLwLmpwMDw
 
 
 ;;; one
-(--> (f-read-text "data")
-     (s-split "\n" it t)
+(--> (aoc-data-as-lines)
      (--map (let* ((halves (-split-at (/ (length it) 2) (s-split "" it t)))
                    (first (car halves))
                    (second (cadr halves)))
