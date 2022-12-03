@@ -13,9 +13,7 @@
           (first (aoc-s-split "" (car elves)))
           (second (aoc-s-split "" (cadr elves)))
           (third (aoc-s-split "" (caddr elves))))
-      (--first (and (-contains? second it)
-                    (-contains? third it))
-               first)))
+      (car (-intersection (-intersection first second) third))))
 
 
   (->> "vJrwpWtwJgWrhcsFMMfFFhFp
@@ -38,7 +36,7 @@ CrZsJsPPZsGzwwsLwLmpwMDw
      (--map (let* ((halves (-split-at (/ (length it) 2) (s-split "" it t)))
                    (first (car halves))
                    (second (cadr halves)))
-              (--first (-contains? second it) first))
+              (car (-intersection first second)))
             it)
      (-map 'aoc-to-priority it)
      (-sum it))
