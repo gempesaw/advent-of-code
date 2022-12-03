@@ -44,3 +44,7 @@ CrZsJsPPZsGzwwsLwLmpwMDw
      (-map 'aoc-find-badge)
      (-map 'aoc-to-priority)
      (-sum))
+
+(--> "vJrwpWtwJgWrhcsFMMfFFhFp"
+     (cl-destructuring-bind (first second) (-split-at (/ (length it) 2) (s-split "" it t))
+       (car (-intersection first second))))
