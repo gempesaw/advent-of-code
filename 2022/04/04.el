@@ -7,12 +7,11 @@
 2-6,4-8
 "
      (aoc-s-split "\n")
-     (--map (->> it
-                 (s-split ",")
-                 (--map (->> it
-                             (s-split "-")
-                             (-map 'string-to-number)
-                             (apply 'number-sequence)))))
+     (--map (--map (->> it
+                        (s-split "-")
+                        (-map 'string-to-number)
+                        (apply 'number-sequence))
+                   (s-split "," it)))
      (--count (let* ((first (car it))
                      (second (cadr it))
                      (intersection (-intersection first second)))
