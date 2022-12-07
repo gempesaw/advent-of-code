@@ -32,3 +32,10 @@
      (--map (substring-no-properties aoc-d6-string (- it 1)  (+ it 13)) it)
      (--find-index (= 14 (length (-distinct (aoc-s-split "" it)))) it)
      (+ 14 it))
+
+
+(--> "zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw"
+     (setq aoc-d6-string it)
+     (length it)
+     (number-sequence 1 it)
+     (-each-indexed it ))
