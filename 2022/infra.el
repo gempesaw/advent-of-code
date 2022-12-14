@@ -29,3 +29,5 @@
 (defun aoc-data-as-lines ()
   (->> (f-read-text "data")
        (aoc-s-split "\n")))
+
+(require 'loop)
