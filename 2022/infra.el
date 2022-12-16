@@ -31,3 +31,11 @@
        (aoc-s-split "\n")))
 
 (require 'loop)
+
+
+(key-chord-define-global "jl" (lambda ()
+                                (interactive)
+                                (eval-buffer)
+                                (save-excursion
+                                  (goto-char (point-max))
+                                  (eval-defun nil))))
