@@ -26,9 +26,12 @@
 (defun aoc-s-split (separator string)
   (s-split separator string t))
 
-(defun aoc-data-as-lines ()
-  (->> (f-read-text "data")
-       (aoc-s-split "\n")))
+(defun aoc-data-as-lines (&optional filename)
+  (let ((file (if filename filename "data")) )
+    (->> file
+         (f-read-text)
+         (s-chomp)
+         (aoc-s-split "\n"))))
 
 (require 'loop)
 

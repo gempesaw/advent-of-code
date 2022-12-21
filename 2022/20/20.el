@@ -1,0 +1,81 @@
+(defun aoc-decorate (number)
+  `(,number nil))
+
+(defun aoc-swap (encrypted-file)
+  (let ((list-length (length encrypted-file)))
+    (--reduce-from
+     (let* ((from-index (-find-index (lambda (from) (not (cadr from))) acc))
+            (from-value `(,(car it) t))
+            (shift-index (car from-value))
+            (to-index (mod (+ from-index shift-index) (- list-length 1)))
+            (to-value (nth to-index acc)))
+       (->> acc
+            (-remove-at from-index)
+            (-insert-at to-index from-value)))
+     encrypted-file
+     encrypted-file)))
+
+(defun aoc-swap-10 (encrypted-file)
+  (let ((list-length (length encrypted-file))
+        (mixes 0))
+    (loop-for-each index (-take (* 10 list-length) (-cycle (number-sequence 0 (- list-length 1))))
+      (setq mixes (+ 1 mixes))
+      (when (eq (mod mixes list-length) 0)
+        (message (format "%s mixes complete, next round" mixes))
+        (sit-for 0))
+      (setq encrypted-file
+            (let* ((mod-index (mod index list-length))
+                   (from-index (-find-index (lambda (from) (eq (cadr from) mod-index)) encrypted-file))
+                   (from-value (nth from-index encrypted-file))
+                   (shift (car from-value))
+                   (to-index (mod (+ from-index shift) (- list-length 1)))
+                   (to-value (nth to-index encrypted-file)))
+              (->> encrypted-file
+                   (-remove-at from-index)
+                   (-insert-at to-index from-value)))))
+    encrypted-file))
+
+(defun aoc-grove-coordinates (list)
+  (let* ((list-length (length list))
+         (zero-index (--find-index (eq it 0) list))
+         (1000th-index (nth (mod (+ zero-index 1000) list-length) list))
+         (2000th-index (nth (mod (+ zero-index 2000) list-length) list))
+         (3000th-index (nth (mod (+ zero-index 3000) list-length) list)))
+    (message (format "%s zero" zero-index))
+    (message (format "%s" (mod (+ zero-index 1000) list-length)))
+    (message (format "%s" (mod (+ zero-index 2000) list-length)))
+    (message (format "%s" (mod (+ zero-index 3000) list-length)))
+    (message (format "1000th value %s" 1000th-index))
+    (message (format "2000th value %s" 2000th-index))
+    (message (format "3000th value %s" 3000th-index))
+    (message (format "%s" (+ 1000th-index 2000th-index 3000th-index)))))
+
+;;; example
+;; (->> (aoc-data-as-lines "example")
+;;      (-map 'string-to-number)
+;;      (-map 'aoc-decorate)
+;;      (aoc-swap)
+;;      (-map 'car)
+;;      (setq swapped)
+;;      (aoc-grove-coordinates)
+;;      )
+
+
+;;; one
+;; (->> (aoc-data-as-lines)
+;;      (-map 'string-to-number)
+;;      (-map 'aoc-decorate)
+;;      (aoc-swap)
+;;      (-map 'car)
+;;      (setq swapped)
+;;      (aoc-grove-coordinates))
+
+;;; two
+(->> (aoc-data-as-lines)
+     (-map 'string-to-number)
+     (--map (* 811589153 it))
+     (--map-indexed `(,it ,it-index))
+     (aoc-swap-10)
+     (-map 'car)
+     (setq swapped)
+     (aoc-grove-coordinates))
